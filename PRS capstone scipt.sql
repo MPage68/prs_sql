@@ -3,90 +3,94 @@ CREATE DATABASE prs;
 USE prs;
 
 
-CREATE TABLE user (
-UserName 			VARCHAR(20)			NOT NULL		UNIQUE,
-ID 					INT					PRIMARY KEY		AUTO_INCREMENT,				
-Password 			VARCHAR(10)			NOT NULL,
-FirstName 			VARCHAR(20)			NOT NULL,
-LastName 			VARCHAR(20)			NOT NULL,
-PhoneNumber 		VARCHAR(12)			NOT NULL,
-Email 				VARCHAR(75)			NOT NULL		UNIQUE,
-IsReviewer 			TinyInt(1)			NOT NULL,
-IsAdmin 			TinyInt(1)			NOT NULL,
-IsActive 			TinyInt(1),
-DateCreated 		DATETIME,
-DateUpdated 		DATETIME,
-UpdatedByUser 		INT,
-constraint uname unique (username)
+CREATE TABLE User (
+    UserName VARCHAR(20) NOT NULL UNIQUE,
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    Password VARCHAR(10) NOT NULL,
+    FirstName VARCHAR(20) NOT NULL,
+    LastName VARCHAR(20) NOT NULL,
+    PhoneNumber VARCHAR(12) NOT NULL,
+    Email VARCHAR(75) NOT NULL UNIQUE,
+    IsReviewer TINYINT(1) NOT NULL,
+    IsAdmin TINYINT(1) NOT NULL,
+    IsActive TINYINT(1),
+    DateCreated DATETIME,
+    DateUpdated DATETIME,
+    UpdatedByUser INT,
+    CONSTRAINT Uname UNIQUE (UserName)
 );
 
-CREATE TABLE vendor (
-ID 					INT					PRIMARY KEY		AUTO_INCREMENT,	
-Code 				VARCHAR(10)			NOT NULL		UNIQUE,
-Name 				VARCHAR(255)		NOT NULL,
-Address 			VARCHAR(255)		NOT NULL,
-City 				VARCHAR(255)		NOT NULL,
-State 				VARCHAR(2)			NOT NULL,
-Zip 				VARCHAR(5)			NOT NULL,
-PhoneNumber 		VARCHAR(12)			NOT NULL,
-Email 				VARCHAR(100)		NOT NULL,
-IsPreApproved 		TinyInt(1)			NOT NULL,
-IsActive 			TinyInt(1),
-DateCreated 		DATETIME,
-DateUpdated 		DATETIME,
-UpdatedByUser 		INT,
-constraint vcode unique (code)
+CREATE TABLE Vendor (
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    Code VARCHAR(10) NOT NULL UNIQUE,
+    Name VARCHAR(255) NOT NULL,
+    Address VARCHAR(255) NOT NULL,
+    City VARCHAR(255) NOT NULL,
+    State VARCHAR(2) NOT NULL,
+    Zip VARCHAR(5) NOT NULL,
+    PhoneNumber VARCHAR(12) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    IsPreApproved TINYINT(1) NOT NULL,
+    IsActive TINYINT(1),
+    DateCreated DATETIME,
+    DateUpdated DATETIME,
+    UpdatedByUser INT,
+    CONSTRAINT Vcode UNIQUE (Code)
 );
 
 CREATE TABLE product (
-ID 					INT					PRIMARY KEY		AUTO_INCREMENT,	
-VendorID 			INT					NOT NULL,
-PartNumber 			VARCHAR(50)			NOT NULL,
-Name 				VARCHAR(150)		NOT NULL,
-Price 				DECIMAL(10,2)		NOT NULL,
-Unit 				VARCHAR(255),
-PhotoPath 			VARCHAR(255),
-IsActive 			TinyInt(1),
-DateCreated 		DATETIME,
-DateUpdated 		DATETIME,
-UpdatedByUser 		INT,
-FOREIGN KEY (VENDORID) references PRODUCT (ID),
-constraint vendor_part unique (vendorid, partnumber)
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    VendorID INT NOT NULL,
+    PartNumber VARCHAR(50) NOT NULL,
+    Name VARCHAR(150) NOT NULL,
+    Price DECIMAL(10,2) NOT NULL,
+    Unit VARCHAR(255),
+    PhotoPath VARCHAR(255),
+    IsActive TINYINT(1),
+    DateCreated DATETIME,
+    DateUpdated DATETIME,
+    UpdatedByUser INT,
+    FOREIGN KEY (VendorID)
+        REFERENCES Product (ID),
+    CONSTRAINT Vendor_Part UNIQUE (VendorId , PartNumber)
 );
 
 CREATE TABLE purchaseRequest (
-ID 					INT					PRIMARY KEY		AUTO_INCREMENT,	
-UserID 				INT					NOT NULL,
-Description 		VARCHAR(100)		NOT NULL,
-Justification 		VARCHAR(255)		NOT NULL,
-DateNeeded 			DATE				NOT NULL,
-DeliveryMode 		VARCHAR(25)			NOT NULL,
-Status				VARCHAR(20)			NOT NULL,
-Total 				DECIMAL(10,2)		NOT NULL,
-SubmittedDate 		DATETIME,
-IsActive 			TinyInt(1)			NOT NULL,
-ReasonForRejection 	VARCHAR(100)		NOT NULL,
-DateCreated 		DATETIME,
-DateUpdated 		DATETIME,
-UpdatedByUser 		INT,
-FOREIGN KEY (USERID) references USER (ID)
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    UserID INT NOT NULL,
+    Description VARCHAR(100) NOT NULL,
+    Justification VARCHAR(255) NOT NULL,
+    DateNeeded DATE NOT NULL,
+    DeliveryMode VARCHAR(25) NOT NULL,
+    Status VARCHAR(20) NOT NULL,
+    Total DECIMAL(10,2) NOT NULL,
+    SubmittedDate DATETIME,
+    IsActive TINYINT(1) NOT NULL,
+    ReasonForRejection VARCHAR(100) NOT NULL,
+    DateCreated DATETIME,
+    DateUpdated DATETIME,
+    UpdatedByUser INT,
+    FOREIGN KEY (USERID)
+        REFERENCES User (ID)
 );
 
-CREATE TABLE purchaseRequestLineitem (
-ID 					INT					PRIMARY KEY		AUTO_INCREMENT,	
-PurchaseRequestID 	INT					NOT NULL		UNIQUE,
-ProductID 			INT					NOT NULL		UNIQUE,	
-Quantity 			INT					NOT NULL,
-IsActive 			tinyint(1) default 1 not null,
-DateCreated 		datetime default current_timestamp not null,
-DateUpdated 		datetime default current_timestamp on update current_timestamp not null,
-UpdatedByUser 		integer default 1 not null,
-FOREIGN KEY (PRODUCTID) references PRODUCT (ID),
-FOREIGN KEY (PURCHASEREQUESTID) references PURCHASEREQUEST (ID),
-constraint req_pdt unique (purchaserequestid,productid)
+CREATE TABLE PurchaseRequestLineitem (
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    PurchaseRequestID INT NOT NULL UNIQUE,
+    ProductID INT NOT NULL UNIQUE,
+    Quantity INT NOT NULL,
+    IsActive TINYINT(1) DEFAULT 1 NOT NULL,
+    DateCreated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    DateUpdated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    UpdatedByUser INTEGER DEFAULT 1 NOT NULL,
+    FOREIGN KEY (PRODUCTID)
+        REFERENCES PRODUCT (ID),
+    FOREIGN KEY (PURCHASEREQUESTID)
+        REFERENCES PURCHASEREQUEST (ID),
+    CONSTRAINT req_pdt UNIQUE (purchaserequestid , productid)
 );
 
-INSERT INTO user(ID, UserName, Password, FirstName, LastName, PhoneNumber, Email, IsReviewer, IsAdmin) values
+INSERT INTO User(ID, UserName, Password, FirstName, LastName, PhoneNumber, Email, IsReviewer, IsAdmin) values
 
 (1,'SYSTEM','xxxxx','System','System','XXX-XXX-XXXX','system@test.com',1,1),
 
